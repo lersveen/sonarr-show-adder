@@ -1,13 +1,14 @@
 import sys
 import json
+import csv
 import requests
 import xmltodict
 
 try:
-    imdb_id = str(sys.argv[1])
+    imdb_list_id = str(sys.argv[1])
     api_key = str(sys.argv[2])
 except Exception:
-    raise ValueError('Missing arguments – need both: <IMDB id> <Sonarr api key>')
+    raise ValueError('Missing arguments – need both: <IMDB list id> <Sonarr api key>')
     sys.exit()
 
 sonarr_host = 'localhost:8989/sonarr'
@@ -98,8 +99,43 @@ def send_to_sonarr(series_info):
         return None
 
 
+def get_imdb_list(imdb_list_id):
+    data = []
+
+    headers = {'Content-Type': 'text/csv'}
+    url = f'https://www.imdb.com/list/{imdb_list_id}/export'
+
+    try:
+        with requests.get(url, headers=headers, stream=True) as r:
+            lines = (line for line in r.iter_lines(decode_unicode=True))
+            for row in csv.DictReader(lines):
+                data.append(row)
+
+        r.raise_for_status()
+
+        print('Succeeded getting list from IMDB')
+
+        return data
+    except Exception as e:
+        print('Failed getting list from IMDB')
+        print(e)
+        return None
+
+
+def filter_imdb_list(imdb_list, field, filter_value):
+    filtered_list = []
+    for item in imdb_list:
+        if item.get(field) == filter_value:
+            filtered_list.append(item)
+    return filtered_list
+
+
 if __name__ == "__main__":
-    tvdb_id = get_tvdb_id(imdb_id)
-    series_info = lookup_series(tvdb_id)
-    response = send_to_sonarr(series_info)
-    print(response)
+    imdb_list = get_imdb_list(imdb_list_id)
+    series_list = filter_imdb_list(imdb_list, 'Title Type', 'tvSeries')
+
+    for series in series_list:
+        tvdb_id = get_tvdb_id(series.get('Const'))
+        series_info = lookup_series(tvdb_id)
+        response = send_to_sonarr(series_info)
+        print(response)
