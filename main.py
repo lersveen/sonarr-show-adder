@@ -90,7 +90,7 @@ def send_to_sonarr(series_info):
 
         print('Succeeded posting')
 
-        return r.json()
+        return r.text()
 
     except Exception as e:
         print('Failed posting')
@@ -102,3 +102,4 @@ if __name__ == "__main__":
     tvdb_id = get_tvdb_id(imdb_id)
     series_info = lookup_series(tvdb_id)
     send_to_sonarr(series_info)
+    print(send_to_sonarr)
