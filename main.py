@@ -83,7 +83,7 @@ def send_to_sonarr(series_info):
 
     url = f'http://{sonarr_host}/api/series'
     try:
-        r = requests.post(url=url, data=json.dumps(data), headers=headers)
+        r = requests.post(url=url, data=data, headers=headers)
 
         r.raise_for_status()
 
