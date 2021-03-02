@@ -101,5 +101,5 @@ def send_to_sonarr(series_info):
 if __name__ == "__main__":
     tvdb_id = get_tvdb_id(imdb_id)
     series_info = lookup_series(tvdb_id)
-    send_to_sonarr(series_info)
-    print(send_to_sonarr)
+    response = send_to_sonarr(series_info)
+    print(response)
