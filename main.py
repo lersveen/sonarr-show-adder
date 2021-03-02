@@ -51,8 +51,9 @@ def lookup_series(tvdb_id):
         print('Succeeded looking up series')
 
         return r.json()
-    except Exception:
+    except Exception as e:
         print('Failed looking up series')
+        print(e)
         return None
 
 
@@ -90,8 +91,9 @@ def send_to_sonarr(series_info):
 
         return r.json()
 
-    except Exception:
+    except Exception as e:
         print('Failed posting')
+        print(e)
         return None
 
 
