@@ -42,7 +42,7 @@ def lookup_series(tvdb_id):
         'Content-Type': 'application/json'
         }
 
-    url = f'http://{SONARR_HOST}/api/series/lookup?term=tvdb:{tvdb_id}'
+    url = f'http://{sonarr_host}/api/series/lookup?term=tvdb:{tvdb_id}'
 
     try:
         r = requests.get(url=url, headers=headers)
@@ -82,7 +82,7 @@ def send_to_sonarr(series_info):
         'Content-Type': 'application/json'
         }
 
-    url = f'http://{SONARR_HOST}:8989/api/series'
+    url = f'http://{sonarr_host}:8989/api/series'
     try:
         r = requests.post(url=url, data=json.dumps(payload), headers=headers)
 
