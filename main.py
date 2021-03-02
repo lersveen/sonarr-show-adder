@@ -25,14 +25,15 @@ def get_tvdb_id(imdb_id):
 
         r.raise_for_status()
 
-        print('Succeeded getting info from tvdb')
-
         response_dict = xmltodict.parse(r.content)
+        tvdb_id = response_dict['Data']['Series'].get('seriesid')
 
-        return response_dict['Data']['Series'].get('seriesid')
+        print(f'Succeeded getting series ID from tvdb: {tvdb_id}')
+
+        return tvdb_id
 
     except Exception as e:
-        print('Failed getting info from tvdb')
+        print('Failed getting series ID from tvdb')
         print(e)
         return None
 
@@ -135,7 +136,11 @@ if __name__ == "__main__":
     series_list = filter_imdb_list(imdb_list, 'Title Type', 'tvSeries')
 
     for series in series_list:
+        print(f'\nProcessing series "{series.get("Title")}" ({series.get("Const")}):')
         tvdb_id = get_tvdb_id(series.get('Const'))
         series_info = lookup_series(tvdb_id)
-        response = send_to_sonarr(series_info)
-        print(response)
+        if series_info:
+            response = send_to_sonarr(series_info)
+            print(response)
+        else:
+            print('No series info, cannot send to Sonarr')
