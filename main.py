@@ -13,6 +13,7 @@ except Exception:
 sonarr_host = 'localhost:8989/sonarr'
 user_agent = 'Sonarr-show-adder'
 root_folder = '/home/lersveen/Bernt/Serier/'
+quality_profile = 6
 
 
 def get_tvdb_id(imdb_id):
@@ -63,7 +64,7 @@ def send_to_sonarr(series_info):
         'monitored': True,
         'tvdbId': series_info[0].get('tvdbId'),
         'title': series_info[0].get('title'),
-        'profileId': series_info[0].get('profileId'),
+        'profileId': quality_profile,
         'titleSlug': series_info[0].get('titleSlug'),
         'seasonFolder': True,
         'seasons': series_info[0].get('seasons'),
@@ -74,8 +75,6 @@ def send_to_sonarr(series_info):
             'ignoreEpisodesWithFiles': False
             }
         }
-
-    print(data)
 
     headers = {
         'User-Agent': user_agent,
@@ -89,12 +88,12 @@ def send_to_sonarr(series_info):
 
         r.raise_for_status()
 
-        print('Succeeded posting')
+        print('Succeeded posting to Sonarr')
 
         return r.json()
 
     except Exception as e:
-        print('Failed posting')
+        print('Failed posting to Sonarr')
         print(e)
         return None
 
