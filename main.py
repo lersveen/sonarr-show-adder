@@ -12,6 +12,7 @@ except Exception:
 
 sonarr_host = 'localhost:8989/sonarr'
 user_agent = 'Sonarr-show-adder'
+root_folder = '/home/lersveen/Bernt/Serier/'
 
 
 def get_tvdb_id(imdb_id):
@@ -41,7 +42,7 @@ def lookup_series(tvdb_id):
         'Content-Type': 'application/json'
         }
 
-    url = 'http://{SONARR_HOST}/api/series/lookup?term=tvdb:{tvdb_id}'
+    url = f'http://{SONARR_HOST}/api/series/lookup?term=tvdb:{tvdb_id}'
 
     try:
         r = requests.get(url=url, headers=headers)
@@ -68,7 +69,7 @@ def send_to_sonarr(series_info):
         'seasons': series_info[0].get('seasons'),
         'images': series_info[0].get('images'),
         'qualityProfileId': '1',
-        'rootFolderPath': '/home/TV Shows/',
+        'rootFolderPath': root_folder,
         'addOptions': {
             'searchForMissingEpisodes': True,
             'ignoreEpisodesWithFiles': False
@@ -81,7 +82,7 @@ def send_to_sonarr(series_info):
         'Content-Type': 'application/json'
         }
 
-    url = 'http://{SONARR_HOST}:8989/api/series/'
+    url = f'http://{SONARR_HOST}:8989/api/series'
     try:
         r = requests.post(url=url, data=json.dumps(payload), headers=headers)
 
