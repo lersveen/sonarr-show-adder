@@ -90,7 +90,7 @@ def send_to_sonarr(series_info):
 
         print('Succeeded posting')
 
-        return r.text()
+        return r.text
 
     except Exception as e:
         print('Failed posting')
