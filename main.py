@@ -59,7 +59,7 @@ def lookup_series(tvdb_id):
 
 
 def send_to_sonarr(series_info):
-    payload = {
+    data = {
         'monitored': True,
         'tvdbId': series_info[0].get('tvdbId'),
         'title': series_info[0].get('title'),
@@ -68,7 +68,6 @@ def send_to_sonarr(series_info):
         'seasonFolder': True,
         'seasons': series_info[0].get('seasons'),
         'images': series_info[0].get('images'),
-        'qualityProfileId': '1',
         'rootFolderPath': root_folder,
         'addOptions': {
             'searchForMissingEpisodes': True,
@@ -82,15 +81,15 @@ def send_to_sonarr(series_info):
         'Content-Type': 'application/json'
         }
 
-    url = f'http://{sonarr_host}:8989/api/series'
+    url = f'http://{sonarr_host}/api/series'
     try:
-        r = requests.post(url=url, data=json.dumps(payload), headers=headers)
+        r = requests.post(url=url, data=json.dumps(data), headers=headers)
 
         r.raise_for_status()
 
         print('Succeeded posting')
 
-        return r.text
+        return r.json()
 
     except Exception as e:
         print('Failed posting')
